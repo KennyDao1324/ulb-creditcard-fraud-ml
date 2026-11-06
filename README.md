@@ -1,6 +1,7 @@
 # ULB Real Credit-Card Fraud ML
 
-Standalone PyCharm project for the real, anonymized ULB/Worldline European card-transaction dataset. It compares class-weighted logistic regression and random forest models under a time-ordered evaluation.
+Standalone PyCharm project for the real, anonymized ULB/Worldline European card-transaction dataset. It
+compares class-weighted logistic regression, random forest, and XGBoost under a time-ordered evaluation.
 
 ## Dataset
 
@@ -54,7 +55,10 @@ Dal Pozzolo, A. et al., “Calibrating Probability with Undersampling for Unbala
 
 ## Current trained result
 
-Logistic regression was selected. On the later 50,000-row real-transaction sample it achieved PR-AUC **0.7432**, ROC-AUC **0.9830**, precision **0.8958**, recall **0.6515**, and F1 **0.7544**. See [`outputs/metrics.json`](outputs/metrics.json) and [`outputs/model_comparison.csv`](outputs/model_comparison.csv).
+XGBoost was selected with validation PR-AUC **0.7660**. On the later 50,000-row real-transaction sample it
+achieved PR-AUC **0.8155**, ROC-AUC **0.9725**, precision **0.9038**, recall **0.7121**, and F1 **0.7966**.
+See [`outputs/metrics.json`](outputs/metrics.json) and
+[`outputs/model_comparison.csv`](outputs/model_comparison.csv).
 
 ![ULB model comparison](outputs/model_comparison.png)
 

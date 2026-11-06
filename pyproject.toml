@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Leakage-aware benchmark on real anonymized ULB card transactions"
 requires-python = ">=3.11"
 dependencies = [
+  "xgboost>=3.4.1,<4",
   "certifi>=2025.1",
   "fastapi>=0.115,<1",
   "joblib>=1.4,<2",

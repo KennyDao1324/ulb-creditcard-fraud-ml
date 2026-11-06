@@ -15,6 +15,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import ConfusionMatrixDisplay, PrecisionRecallDisplay
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from xgboost import XGBClassifier
 
 from .config import PROJECT_ROOT, load_config
 from .data import CATEGORICAL_COLUMNS, MODEL_COLUMNS, NUMERIC_COLUMNS, load_splits, profile
@@ -37,7 +38,7 @@ def build_preprocessor() -> ColumnTransformer:
     return ColumnTransformer(transformers)
 
 
-def candidate_models(config: dict) -> dict[str, Pipeline]:
+def candidate_models(config: dict, positive_weight: float = 1.0) -> dict[str, Pipeline]:
     seed = int(config["random_seed"])
     return {
         "logistic_regression": Pipeline(
@@ -63,6 +64,29 @@ def candidate_models(config: dict) -> dict[str, Pipeline]:
                         max_depth=int(config["random_forest_max_depth"]),
                         min_samples_leaf=4,
                         class_weight="balanced_subsample",
+                        n_jobs=4,
+                        random_state=seed,
+                    ),
+                ),
+            ]
+        ),
+        "xgboost": Pipeline(
+            [
+                ("preprocessor", build_preprocessor()),
+                (
+                    "classifier",
+                    XGBClassifier(
+                        n_estimators=int(config["xgboost_estimators"]),
+                        max_depth=int(config["xgboost_max_depth"]),
+                        learning_rate=float(config["xgboost_learning_rate"]),
+                        min_child_weight=5,
+                        subsample=0.85,
+                        colsample_bytree=0.85,
+                        reg_lambda=2.0,
+                        scale_pos_weight=positive_weight,
+                        objective="binary:logistic",
+                        eval_metric="aucpr",
+                        tree_method="hist",
                         n_jobs=4,
                         random_state=seed,
                     ),
@@ -101,7 +125,9 @@ def save_plots(comparison, validation, validation_scores, test, test_score, thre
     output = PROJECT_ROOT / "outputs"
     output.mkdir(exist_ok=True)
     figure, axis = plt.subplots(figsize=(7, 4))
-    axis.bar(comparison["model"], comparison["pr_auc"], color=["#2563eb", "#0f766e"])
+    axis.bar(
+        comparison["model"], comparison["pr_auc"], color=["#2563eb", "#0f766e", "#b45309"]
+    )
     axis.set_ylabel("Validation PR-AUC")
     axis.set_title(f"{title}: model comparison")
     figure.tight_layout()
@@ -146,7 +172,8 @@ def train(config_path: str | Path) -> dict:
     train_x, train_y = splits["train"]
     validation_x, validation_y = splits["validation"]
     fitted, validation_scores, thresholds, rows = {}, {}, {}, []
-    for name, model in candidate_models(config).items():
+    positive_weight = float((train_y == 0).sum() / max(1, (train_y == 1).sum()))
+    for name, model in candidate_models(config, positive_weight).items():
         model.fit(train_x, train_y)
         score = model.predict_proba(validation_x)[:, 1]
         threshold = best_f1_threshold(validation_y.to_numpy(), score)
@@ -160,10 +187,14 @@ def train(config_path: str | Path) -> dict:
     test_score = fitted[winner].predict_proba(test_x)[:, 1]
     test_metrics = binary_metrics(test_y, test_score, threshold)
 
-    production = candidate_models(config)[winner]
+    development_target = pd.concat([train_y, validation_y], ignore_index=True)
+    development_weight = float(
+        (development_target == 0).sum() / max(1, (development_target == 1).sum())
+    )
+    production = candidate_models(config, development_weight)[winner]
     production.fit(
         pd.concat([train_x, validation_x], ignore_index=True),
-        pd.concat([train_y, validation_y], ignore_index=True),
+        development_target,
     )
     bundle = {
         "model": production,

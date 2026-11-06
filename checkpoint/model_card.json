@@ -11,7 +11,10 @@
     "random_seed": 42,
     "logistic_max_iter": 600,
     "random_forest_trees": 160,
-    "random_forest_max_depth": 14
+    "random_forest_max_depth": 14,
+    "xgboost_estimators": 500,
+    "xgboost_max_depth": 6,
+    "xgboost_learning_rate": 0.05
   },
   "profile": {
     "rows": 284807,
@@ -63,36 +66,36 @@
       "dataset_path": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89"
     }
   },
-  "selected_model": "logistic_regression",
+  "selected_model": "xgboost",
   "selection_metric": "validation_pr_auc",
   "validation": {
-    "model": "logistic_regression",
-    "threshold": 0.9999832989,
-    "accuracy": 0.99962,
-    "precision": 0.8974358974,
-    "recall": 0.7,
-    "f1": 0.7865168539,
-    "roc_auc": 0.9692832833,
-    "pr_auc": 0.755562638,
-    "false_positive_rate": 8.00801e-05,
-    "true_negative": 49946,
-    "false_positive": 4,
-    "false_negative": 15,
-    "true_positive": 35
+    "model": "xgboost",
+    "threshold": 0.7517191768,
+    "accuracy": 0.99968,
+    "precision": 0.925,
+    "recall": 0.74,
+    "f1": 0.8222222222,
+    "roc_auc": 0.9701845846,
+    "pr_auc": 0.7660422342,
+    "false_positive_rate": 6.00601e-05,
+    "true_negative": 49947,
+    "false_positive": 3,
+    "false_negative": 13,
+    "true_positive": 37
   },
   "test": {
-    "threshold": 0.999983298884476,
-    "accuracy": 0.99944,
-    "precision": 0.8958333333333334,
-    "recall": 0.6515151515151515,
-    "f1": 0.7543859649122807,
-    "roc_auc": 0.9830224381031446,
-    "pr_auc": 0.7431509694400393,
+    "threshold": 0.7517191767692566,
+    "accuracy": 0.99952,
+    "precision": 0.9038461538461539,
+    "recall": 0.7121212121212122,
+    "f1": 0.7966101694915254,
+    "roc_auc": 0.9725455783452339,
+    "pr_auc": 0.8154780538713019,
     "false_positive_rate": 0.00010013217447030079,
     "true_negative": 49929,
     "false_positive": 5,
-    "false_negative": 23,
-    "true_positive": 43
+    "false_negative": 19,
+    "true_positive": 47
   },
   "split_rows": {
     "train": 150000,
