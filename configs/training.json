@@ -1,0 +1,14 @@
+{
+  "dataset_name": "ULB European credit-card transactions",
+  "dataset_kind": "real_anonymized",
+  "dataset_path": "data/raw/creditcard.csv",
+  "train_fraction": 0.6,
+  "validation_fraction": 0.2,
+  "max_train_rows": 150000,
+  "max_validation_rows": 50000,
+  "max_test_rows": 50000,
+  "random_seed": 42,
+  "logistic_max_iter": 600,
+  "random_forest_trees": 160,
+  "random_forest_max_depth": 14
+}

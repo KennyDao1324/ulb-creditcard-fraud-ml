@@ -1,0 +1,13 @@
+.venv/
+.idea/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.matplotlib/
+*.egg-info/
+
+data/raw/*
+!data/raw/.gitkeep
+preprocessed_df/*.csv.gz
+artifacts/*.joblib

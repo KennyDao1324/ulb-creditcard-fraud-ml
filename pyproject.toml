@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ulb-creditcard-fraud-ml"
+version = "0.1.0"
+description = "Leakage-aware benchmark on real anonymized ULB card transactions"
+requires-python = ">=3.11"
+dependencies = [
+  "certifi>=2025.1",
+  "fastapi>=0.115,<1",
+  "joblib>=1.4,<2",
+  "matplotlib>=3.9,<4",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "pydantic>=2.8,<3",
+  "scikit-learn>=1.5,<2",
+  "uvicorn>=0.30,<1",
+]
+
+[project.optional-dependencies]
+dev = ["httpx>=0.27,<1", "pytest>=8,<9", "ruff>=0.8,<1"]
+
+[project.scripts]
+fraud-train = "fraudbench.training:main"
+fraud-predict = "fraudbench.inference:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
